@@ -1,0 +1,22 @@
+name: Sync to BunnyCDN
+
+on:
+  push:
+    branches:
+      - main # Or your default branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install LFTP
+        run: sudo apt-get update && sudo apt-get install lftp -y
+
+      - name: Sync files to BunnyCDN
+        env:
+          BUNNYCDN_STORAGE_ZONE: ${{ secrets.BUNNYCDN_STORAGE_ZONE }}
+          BUNNYCDN_API_KEY: ${{ secrets.BUNNYCDN_API_KEY }}
+        run: |
+          lftp -c "set ssl:verify-certificate no; open -u $BUNNYCDN_STORAGE_ZONE,$BUNNYCDN_API_KEY ftp://storage.bunnycdn.com; mirror -R ./path/to/your/files /your/storage/zone/path"

@@ -1,0 +1,1 @@
+console.log("This is the proxied local version of the script.");
